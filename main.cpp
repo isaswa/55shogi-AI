@@ -1,7 +1,6 @@
-#include <cstdlib>
-#include <cstdio>
-#include "Game.h"
-#include <math.h>
+#include "minishogi.h"
+#include "AI.h"
+
 using namespace std;
 
 //boolean id we=A=0 enemy=B=1
@@ -10,12 +9,27 @@ using namespace std;
 //T=silver(up)=6 X=warrior(up)=7 U=ryuou=8 H=horse=9
 //A side:small, B side:big
 
-void aigame()
+void AIgame();
+void game(bool);
+void test();
+
+
+int main()
 {
-	minishoghi S;
+	game(0);
+	//aigame();
+	//test();
+	return 0;
+}
+
+
+void AIgame()
+{
+	minishogi S;
 	int x1, x2, y1, y2, act;
 	bool id = 0, End = 0;
 	S.initial();
+
 	while (true)
 	{
 		End = 0;
@@ -51,7 +65,7 @@ void aigame()
 					else if (S.movement(x1, y1, x2, y2, id) != 0)
 					{
 						//taking up
-						if (S.eat(x2, y2, id) != 0)
+						if (S.IsEnemy(x2, y2, id))
 						{
 							int loc = -1;
 
@@ -112,7 +126,7 @@ void aigame()
 					scanf("%d%d", &x1, &y1);
 
 					//location in hold array
-					int loc = S.hit(type, x1, y1, id);
+					int loc = S.HitIndex(type, x1, y1, id);
 
 					//illegal hit
 					if (loc == 0) printf("motion illegal.\n");
@@ -154,24 +168,20 @@ void aigame()
 
 void game( bool who)
 {
-	minishoghi S;
+	minishogi S;
 	int x1, x2, y1, y2, act;
 	bool id=0, End=0;
 	S.initial();
 
-	while (true)
+	while(true)
 	{
 		End=0;
 
 		while (!End)
 		{
 			S.PrintTable();
-			printf("\n");
-			S.initialControl();
-			S.GetControl(0);
-			S.PrintControlA();
 
-			//turns
+            //turns
 			if (id == 0) printf("turn : A\n");
 			else if (id == 1) printf("turn : B\n");
 
@@ -184,6 +194,13 @@ void game( bool who)
 			    //ask location
 				printf("from( , ): ");
 				scanf("%d%d", &x1, &y1);
+
+                //test
+				printf("legal location:\n");
+				S.initialMovable();
+				S.GetMovable(x1,y1);
+				S.PrintMovable();
+
 				printf("  to( , ): ");
 				scanf("%d%d", &x2, &y2);
 
@@ -195,7 +212,7 @@ void game( bool who)
 				else if (S.movement( x1, y1, x2, y2, id) != 0)
 				{
 					//taking up
-					if (S.eat(x2, y2, id) != 0)
+					if (S.IsEnemy(x2, y2, id))
 					{
 						int loc = -1;
 
@@ -256,7 +273,7 @@ void game( bool who)
 				scanf("%d%d", &x1, &y1);
 
 				//location in hold array
-				int loc = S.hit(type, x1, y1, id);
+				int loc = S.HitIndex(type, x1, y1, id);
 
 				//illegal hit
 				if (loc == 0) printf("motion illegal.\n");
@@ -265,7 +282,7 @@ void game( bool who)
 				else
 				{
 					//hiting
-					S.PutChess(x1, y1, type - ('a' - 'A')*id);
+					S.PutChess(x1, y1, type + ('a' - 'A')*id);
 
 					//taking out
 					if (!id) S.A[loc] = 0;
@@ -294,23 +311,16 @@ void game( bool who)
 	}
 }
 
-void test();
-
-int main()
-{
-	game(0);
-	//aigame();
-	//test();
-	return 0;
-}
-
-//test
 void test()
 {
-	minishoghi S;
+	minishogi S;
 	S.initial();
+	S.PrintTable();
+	S.initialMovable();
+	S.GetMovable(2,4);
+	S.PrintMovable();
 	//S.canmove_croS(2,2,0);
-	int a; scanf("%d", &a);
+	//int a; scanf("%d", &a);
 	//print_shogi(x);
 	//printf("is (1,4) can be eaten : %d\n",eat(x,1,4,0));
 	//printf("is (0,4)='k': %d\n",x.x[0][4]=='k' ? 1 : 0);
