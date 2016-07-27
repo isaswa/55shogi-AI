@@ -16,8 +16,8 @@ void test();
 
 int main()
 {
-	game(0);
-	//aigame();
+	//game(0);
+	AIgame();
 	//test();
 	return 0;
 }
@@ -25,7 +25,8 @@ int main()
 
 void AIgame()
 {
-	minishogi S;
+    AI a1;
+    minishogi S;
 	int x1, x2, y1, y2, act;
 	bool id = 0, End = 0;
 	S.initial();
@@ -36,15 +37,20 @@ void AIgame()
 
 		while (!End)
 		{
-			S.PrintTable();
 			if (id == 0)
 			{
-				//AI
+			    a1.AssignTable(S);
+			    S=a1.ABSearch(S,-INF,INF,4,0);
+
+			    id=!id;
 			}
+
+			S.PrintTable();
+
 			//turns
 			if (id == 1)
 			{
-				printf("turn : B\n");
+				printf("your turn(B):\n");
 				printf("0 for move, 1 for hit :");
 				scanf("%d", &act);
 
@@ -159,9 +165,6 @@ void AIgame()
 			S.PrintTable();
 			break;
 		}
-
-		//for(int i=0;i<6;i++) printf("A[%d]=%d ",i,S.A[i]==1 ? 1 : 0);
-		//printf("\n");
 
 	}
 }

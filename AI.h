@@ -1,4 +1,5 @@
 #include "minishogi.h"
+#define INF 100000000
 
 #ifndef AI_H
 #define AI_H
@@ -11,7 +12,10 @@ protected:
 
 public:
 
-	void NextMoves(vector<minishogi> & ,bool);
+    void AssignTable(minishogi &);
+
+    //ABsearch
+	vector<minishogi> NextMoves(minishogi & ,bool);
 	int Tablescore(minishogi & ,bool);
 	int AlphaCut(minishogi & ,int ,int ,int ,bool);
 	int BetaCut(minishogi & ,int ,int ,int ,bool);

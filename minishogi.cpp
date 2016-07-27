@@ -192,7 +192,7 @@ bool minishogi::movement(int x1, int y1, int x2, int y2, bool who)
 	else return 0;
 }
 
-//take the chess on (x,y) to your hold array
+//take out the chess on (x,y)
 bool minishogi::Take(int x, int y, bool who)
 {
 	if (table[x][y]==0) return 0;
@@ -256,11 +256,11 @@ int minishogi::HitIndex(char type, int x1, int y1, bool who)
 		int loc = 0;
 
 		for (int i = 0;i<6;i++)
-			if (hold[i] == type - ('a' - 'A')) loc = i;
+			if (hold[i] == type-('a' - 'A') ) loc=i;
 
 		//not exist
 		if (!loc) return 0;
-		else if (!A[loc]) return 0;
+		else if (A[loc]==0) return 0;
 
 		return loc;
 	}
@@ -273,11 +273,11 @@ int minishogi::HitIndex(char type, int x1, int y1, bool who)
 		if (type == 'w' && y1 == 4) return 0;
 
 		for (int i = 0;i<6;i++)
-			if (hold[i] == type) loc = i;
+			if (hold[i] == type) loc=i;
 
 		//not exist
 		if (!loc) return 0;
-		if (!B[loc]) return 0;
+		if (B[loc]==0) return 0;
 
 		return loc;
 	}
