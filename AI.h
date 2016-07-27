@@ -11,7 +11,11 @@ protected:
 
 public:
 
-	void NextMoves(vector<minishogi> &, bool);
+	void NextMoves(vector<minishogi> & ,bool);
+	int Tablescore(minishogi & ,bool);
+	int AlphaCut(minishogi & ,int ,int ,int ,bool);
+	int BetaCut(minishogi & ,int ,int ,int ,bool);
+	minishogi ABSearch(minishogi & ,int ,int ,int ,bool);
 
 };
 

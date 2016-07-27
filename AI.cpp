@@ -58,3 +58,66 @@ void AI::NextMoves(vector<minishogi> &V,bool who)
     }
 }
 
+int AI::Tablescore(minishogi &S,bool who)
+{
+
+}
+
+int AI::AlphaCut(minishogi &S,int Alpha,int Beta,int depth,bool who)
+{
+    if(depth==0) return Tablescore(S,who);
+
+    int a=Alpha;
+
+    vector<minishogi> V;
+    NextMoves(V,who);
+
+    for(int i=0; i<V.size(); i++)
+    {
+        int R=BetaCut(V[i],a,Beta,depth-1,who);
+
+        if(R>a) a=R;
+        if(a>=Beta) return a;
+    }
+
+    return a;
+}
+
+int AI::BetaCut(minishogi &S,int Alpha,int Beta,int depth,bool who)
+{
+    if(depth==0) return Tablescore(S,who);
+
+    int b=Beta;
+
+    vector<minishogi> V;
+    NextMoves(V,!who);
+
+    for(int i=0; i<V.size(); i++)
+    {
+        int R=AlphaCut(V[i],Alpha,b,depth-1,who);
+
+        if(R<b) b=R;
+        if(b<=Alpha) return b;
+    }
+
+    return b;
+}
+
+minishogi AI::ABSearch(minishogi &S,int Alpha,int Beta,int depth,bool who)
+{
+
+    int a=Alpha;
+
+    vector<minishogi> V;
+    NextMoves(V,who);
+
+    for(int i=0; i<V.size(); i++)
+    {
+        int R=BetaCut(V[i],a,Beta,depth-1,who);
+
+        if(R>a) a=R;
+        if(a>=Beta) return V[i];
+    }
+
+    return V[V.size()-1];
+}

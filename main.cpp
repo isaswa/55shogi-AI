@@ -3,11 +3,11 @@
 
 using namespace std;
 
-//boolean id we=A=0 enemy=B=1
+//boolean id A=0 B=1
 //K=king=0 G=kin=1 S=silver=2
 //C=croS=3 F=fly=4 W=warrior=5
-//T=silver(up)=6 X=warrior(up)=7 U=ryuou=8 H=horse=9
-//A side:small, B side:big
+//upgrade: S->T C->H F->U W->X
+//A side:small-alphabet, B side:big
 
 void AIgame();
 void game(bool);
