@@ -54,7 +54,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                 if(S0.movable[j/5][j%5])
                 {
                     S2=S0;
-                    if(S0.GetChess(j/5,j%5)!=0) S0.Take(j/5,j%5,who);
+                    if(S2.GetChess(j/5,j%5)!=0) S2.Take(j/5,j%5,who);
                     S2.PutChess(j/5 , j%5 , S2.GetChess(i/5,i%5) );
                     S2.PutChess(i/5 , i%5 , 0);
 

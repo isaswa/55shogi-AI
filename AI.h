@@ -9,7 +9,6 @@ class AI
 protected:
 
     minishogi S;
-
 public:
 
     void AssignTable(minishogi &);

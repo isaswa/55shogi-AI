@@ -18,8 +18,8 @@ public:
 
     //table elements
 	char hold[6] = { 'K','G','S','C','F','W' };
-	bool A[6];
-	bool B[6];
+	short A[6];
+	short B[6];
 	bool controlA[5][5];
 	bool controlB[5][5];
 	bool movable[5][5];

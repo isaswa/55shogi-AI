@@ -77,7 +77,7 @@ void AIgame()
 
 							//find the char location in hold array
 							for (int i = 0;i<6;i++)
-								if (S.GetChess(x2, y2) == S.hold[i] || S.GetChess(x2, y2) - ('a' - 'A') == S.hold[i])
+								if (S.GetChess(x2, y2) == S.hold[i] || S.GetChess(x2, y2) - 32 == S.hold[i])
 								{
 									loc = i;
 									break;
@@ -90,8 +90,8 @@ void AIgame()
 							else if (S.GetChess(x2, y2) == 'x' || S.GetChess(x2, y2) == 'X') loc = 5;
 
 							//eating
-							if (S.GetChess(x2, y2) - 'a' > 0) S.B[loc] = 1;
-							else { S.A[loc] = 1; }
+							if ( (S.GetChess(x2, y2) - 'a' )> 0) S.B[loc] = 1;
+							else { S.A[loc] += 1; }
 						}
 
 						//moving
@@ -99,7 +99,7 @@ void AIgame()
 						S.PutChess(x1, y1, '\0');
 
 						//upgrading
-						int ug = S.IFupgrade(S.GetChess(x2, y2) + id*('a' - 'A'), y1, y2, id);
+						int ug = S.IFupgrade(S.GetChess(x2, y2) + id*32, y1, y2, id);
 						if (ug)
 						{
 							int flag;
@@ -144,8 +144,8 @@ void AIgame()
 						S.PutChess(x1, y1, type - ('a' - 'A')*id);
 
 						//taking out
-						if (!id) S.A[loc] = 0;
-						else { S.B[loc] = 0; }
+						if (!id) S.A[loc] -= 1;
+						else { S.B[loc] -= 1; }
 						printf("hit location=%d\n", loc);
 
 						End = 1;
@@ -234,8 +234,8 @@ void game( bool who)
 						else if (S.GetChess(x2, y2) == 'x' || S.GetChess(x2, y2) == 'X') loc = 5;
 
 						//eating
-						if (S.GetChess(x2, y2) - 'a' > 0) S.B[loc] = 1;
-						else { S.A[loc] = 1; }
+						if (S.GetChess(x2, y2) - 'a' > 0) S.B[loc] += 1;
+						else { S.A[loc] += 1; }
 					}
 
 					//moving
@@ -285,11 +285,11 @@ void game( bool who)
 				else
 				{
 					//hiting
-					S.PutChess(x1, y1, type + ('a' - 'A')*id);
+					S.PutChess(x1, y1, type + 32*id);
 
 					//taking out
-					if (!id) S.A[loc] = 0;
-					else { S.B[loc] = 0; }
+					if (!id) S.A[loc] -= 1;
+					else { S.B[loc] -= 1; }
 					printf("hit location=%d\n", loc);
 
 					End = 1;
