@@ -1,14 +1,16 @@
 #include "minishogi.h"
-#define INF 100000000
 
 #ifndef AI_H
 #define AI_H
+
+#define learningRATE 0.0025
 
 class AI
 {
 protected:
 
     minishogi S;
+    stack<minishogi> TDbuffer;
 
 public:
 
@@ -16,10 +18,12 @@ public:
 
     //ABsearch
 	vector<minishogi> NextMoves(minishogi & ,bool);
-	int Tablescore(minishogi & ,bool);
-	int AlphaCut(minishogi & ,int ,int ,int ,bool);
-	int BetaCut(minishogi & ,int ,int ,int ,bool);
+	double AlphaCut(minishogi & ,int ,int ,int ,bool);
+	double BetaCut(minishogi & ,int ,int ,int ,bool);
 	minishogi ABSearch(minishogi & ,int ,int ,int ,bool);
+
+	//TD-learning
+	void TD1(stack<minishogi> ,bool ,bool);
 
 };
 

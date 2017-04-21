@@ -67,22 +67,9 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
     return V;
 }
 
-int AI::Tablescore(minishogi &S0,bool who)
+double AI::AlphaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
 {
-    int R=0;
-
-    S0.initialControl();
-    S0.GetControl(who);
-
-    for(int i=0;i<25;i++)
-        R+=(who ? S0.controlB[i/5][i%5] : S0.controlA[i/5][i%5]);
-
-    return R;
-}
-
-int AI::AlphaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
-{
-    if(depth==0) return Tablescore(S0,who);
+    if(depth==0) return S0.Tablescore(who);
 
     int a=Alpha;
 
@@ -99,9 +86,9 @@ int AI::AlphaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
     return a;
 }
 
-int AI::BetaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
+double AI::BetaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
 {
-    if(depth==0) return Tablescore(S0,who);
+    if(depth==0) return S0.Tablescore(who);
 
     int b=Beta;
 
@@ -140,4 +127,28 @@ minishogi AI::ABSearch(minishogi &S0,int Alpha,int Beta,int depth,bool who)
     }
 
     return Sg;
+}
+
+void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
+{
+    minishogi ST=state.top();
+    state.pop();
+    double VT=ST.Tablescore(id);
+
+    minishogi St;
+    double Vt;
+
+    while(!state.empty() && ifWIN)
+    {
+        St=state.top();
+        state.pop();
+        Vt=St.Tablescore(id);
+
+        for(int i=1;i<10;i++)
+        {
+            //judge if minions[i] is exist
+            S.minions[i]+=learningRATE*(VT-Vt);
+        }
+    }
+
 }

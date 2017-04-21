@@ -91,6 +91,44 @@ bool minishogi::IsFriend(int x,int y,bool who)
     return 0;
 }
 
+double minishogi::Tablescore(bool who)
+{
+    double R=0;
+
+    if( who && B[0] || !who && A[0]) return R=INF;
+
+    for(int i=0;i<25;i++)
+    {
+        switch(table[i/5][i%5])
+        {
+        case 'G' : R+=(who ? minions[1] : -minions[1]); break;
+        case 'S' : R+=(who ? minions[2] : -minions[2]); break;
+        case 'C' : R+=(who ? minions[3] : -minions[3]); break;
+        case 'F' : R+=(who ? minions[4] : -minions[4]); break;
+        case 'W' : R+=(who ? minions[5] : -minions[5]); break;
+        case 'T' : R+=(who ? minions[6] : -minions[6]); break;
+        case 'X' : R+=(who ? minions[7] : -minions[7]); break;
+        case 'U' : R+=(who ? minions[8] : -minions[8]); break;
+        case 'H' : R+=(who ? minions[9] : -minions[9]); break;
+
+        case 'g' : R+=(!who ? minions[1] : -minions[1]); break;
+        case 's' : R+=(!who ? minions[2] : -minions[2]); break;
+        case 'c' : R+=(!who ? minions[3] : -minions[3]); break;
+        case 'f' : R+=(!who ? minions[4] : -minions[4]); break;
+        case 'w' : R+=(!who ? minions[5] : -minions[5]); break;
+        case 't' : R+=(!who ? minions[6] : -minions[6]); break;
+        case 'x' : R+=(!who ? minions[7] : -minions[7]); break;
+        case 'u' : R+=(!who ? minions[8] : -minions[8]); break;
+        case 'h' : R+=(!who ? minions[9] : -minions[9]); break;
+
+        default: break;
+        }
+
+    }
+
+    return R;
+}
+
 bool minishogi::Move_K( int x1, int y1, int x2, int y2, bool who)
 {
 	if (table[x2][y2] == '\0');
