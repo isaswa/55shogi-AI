@@ -9,6 +9,7 @@ using namespace std;
 //upgrade: S->T C->H F->U W->X
 //A side:small-alphabet, B side:big
 
+minishogi AImove(AI, minishogi,bool);
 void AIgame();
 void game(bool);
 void test();
@@ -22,6 +23,12 @@ int main()
 	return 0;
 }
 
+minishogi AImove(AI a0, minishogi S0,bool id)
+{
+    a0.AssignTable(S0);
+    S0=a0.ABSearch(S0,-INF,INF,4,id);
+    return S0;
+}
 
 void AIgame()
 {
@@ -39,10 +46,7 @@ void AIgame()
 		{
 			if (id == 0)
 			{
-			    a1.AssignTable(S);
-			    S=a1.ABSearch(S,-INF,INF,4,0);
-
-			    id=!id;
+                S=AImove(a1,S,id);
 			}
 
 			S.PrintTable();
@@ -141,7 +145,7 @@ void AIgame()
 					else
 					{
 						//hiting
-						S.PutChess(x1, y1, type - ('a' - 'A')*id);
+						S.PutChess(x1, y1, type+32);
 
 						//taking out
 						if (!id) S.A[loc] -= 1;

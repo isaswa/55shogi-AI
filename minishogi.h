@@ -2,11 +2,14 @@
 #include <cstdlib>
 #include <cmath>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
 #ifndef MINISHOGI_H
 #define MINISHOGI_H
+
+#define INF 100000000
 
 class minishogi
 {
@@ -24,6 +27,10 @@ public:
 	bool controlB[5][5];
 	bool movable[5][5];
 
+	//states & features
+	bool Minions[10];
+	double MinionsWeight[10];
+
 	//table function
 	char GetChess(int, int);
 	void PutChess(int, int, char);
@@ -32,6 +39,7 @@ public:
 	bool IsEnemy(int,int,bool);
 	bool IsFriend(int,int,bool);
 	bool IsEmpty();
+	double TableScore(bool);
 
 	//movement function
 	bool movement(int, int, int, int, bool);
