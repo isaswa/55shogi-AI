@@ -26,6 +26,7 @@ public:
 	bool controlA[5][5];
 	bool controlB[5][5];
 	bool movable[5][5];
+    double minions[10]={0}; //feature value of minions
 
 	//states & features
 	bool Minions[10];

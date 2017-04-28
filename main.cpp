@@ -46,7 +46,8 @@ void AIgame()
 		{
 			if (id == 0)
 			{
-                S=AImove(a1,S,id);
+			    S=AImove(a1,S,id);
+			    id=!id;
 			}
 
 			S.PrintTable();

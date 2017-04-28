@@ -67,6 +67,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
     return V;
 }
 
+
 double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
     if(depth==0) return S0.Tablescore(who);
@@ -85,6 +86,7 @@ double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 
     return a;
 }
+
 
 double AI::BetaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
