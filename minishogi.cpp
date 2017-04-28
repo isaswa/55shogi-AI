@@ -7,7 +7,8 @@ char minishogi::GetChess(int x0, int y0)
 
 void minishogi::PutChess(int x0, int y0, char type)
 {
-	table[x0][y0] = type;
+    //printf("\n   %x   \n",type);
+	table[x0][y0] = char(type);
 }
 
 void minishogi::initial()
@@ -63,6 +64,7 @@ void minishogi::PrintTable()
 
 		printf("\n  -----------\n");
 	}
+	printf("%x   ",table[1][1]);
 }
 
 bool minishogi::IsEnemy(int x,int y,bool who)
@@ -95,7 +97,8 @@ double minishogi::Tablescore(bool who)
 {
     double R=0;
 
-    if( who && B[0] || !who && A[0]) return R=INF;
+    if( who && A[0] || !who && B[0] ) return R=INF;
+    if( who && B[0] || !who && A[0] ) return R=-INF;
 
     for(int i=0;i<25;i++)
     {
@@ -238,21 +241,21 @@ bool minishogi::Take(int x, int y, bool who)
     {
         switch(table[x][y])
         {
-        case 'k':
+        case 'K':
             A[0]++; break;
-        case 'g':
+        case 'G':
             A[1]++; break;
-        case 's':
-        case 't':
+        case 'S':
+        case 'T':
             A[2]++; break;
-        case 'c':
-        case 'h':
+        case 'C':
+        case 'H':
             A[3]++; break;
-        case 'f':
-        case 'u':
+        case 'F':
+        case 'U':
             A[4]++; break;
-        case 'w':
-        case 'x':
+        case 'W':
+        case 'X':
             A[5]++; break;
         }
     }
@@ -260,21 +263,21 @@ bool minishogi::Take(int x, int y, bool who)
     {
         switch(table[x][y])
         {
-        case 'K':
+        case 'k':
             B[0]++; break;
-        case 'G':
+        case 'g':
             B[1]++; break;
-        case 'S':
-        case 'T':
+        case 's':
+        case 't':
             B[2]++; break;
-        case 'C':
-        case 'H':
+        case 'c':
+        case 'h':
             B[3]++; break;
-        case 'F':
-        case 'U':
+        case 'f':
+        case 'u':
             B[4]++; break;
-        case 'W':
-        case 'X':
+        case 'w':
+        case 'x':
             B[5]++; break;
         }
     }
@@ -294,7 +297,7 @@ int minishogi::HitIndex(char type, int x1, int y1, bool who)
 		int loc = 0;
 
 		for (int i = 0;i<6;i++)
-			if (hold[i] == type-('a' - 'A') ) loc=i;
+			if (hold[i] == type-32 ) loc=i;
 
 		//not exist
 		if (!loc) return 0;
@@ -311,7 +314,7 @@ int minishogi::HitIndex(char type, int x1, int y1, bool who)
 		if (type == 'w' && y1 == 4) return 0;
 
 		for (int i = 0;i<6;i++)
-			if (hold[i] == type) loc=i;
+			if (hold[i] == type-32) loc=i;
 
 		//not exist
 		if (!loc) return 0;
@@ -325,12 +328,12 @@ void minishogi::hit(int index,int x,int y,bool who)
 {
     if(!who)
     {
-        PutChess(x,y,hold[index]+'a'-'A');
-        A[index]=0;
+        PutChess(x,y,(hold[index]+32) );
+        A[index]--;
     }
     else{
-        PutChess(x,y,hold[index]);
-        B[index]=0;
+        PutChess(x,y,(hold[index]) );
+        B[index]--;
     }
 }
 

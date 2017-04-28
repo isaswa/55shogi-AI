@@ -18,9 +18,11 @@ public:
 
     //ABsearch
 	vector<minishogi> NextMoves(minishogi & ,bool);
-	double AlphaCut(minishogi & ,int ,int ,int ,bool);
-	double BetaCut(minishogi & ,int ,int ,int ,bool);
-	minishogi ABSearch(minishogi & ,int ,int ,int ,bool);
+    double AlphaCut(minishogi & ,double ,double ,int ,bool);
+    double BetaCut(minishogi & ,double ,double ,int ,bool);
+	minishogi ABSearch(minishogi & ,double ,double ,int ,bool);
+
+
 
 	//TD-learning
 	void TD1(stack<minishogi> ,bool ,bool);

@@ -54,7 +54,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                 if(S0.movable[j/5][j%5])
                 {
                     S2=S0;
-                    if(S0.GetChess(j/5,j%5)!=0) S0.Take(j/5,j%5,who);
+                    if(S2.GetChess(j/5,j%5)!=0) S2.Take(j/5,j%5,who);
                     S2.PutChess(j/5 , j%5 , S2.GetChess(i/5,i%5) );
                     S2.PutChess(i/5 , i%5 , 0);
 
@@ -67,17 +67,18 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
     return V;
 }
 
-double AI::AlphaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
+
+double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
     if(depth==0) return S0.Tablescore(who);
 
-    int a=Alpha;
+    double a=Alpha;
 
     vector<minishogi> V=NextMoves(S0,who);
 
     for(int i=0; i<V.size(); i++)
     {
-        int R=BetaCut(V[i],a,Beta,depth-1,who);
+        double R=BetaCut(V[i],a,Beta,depth-1,who);
 
         if(R>a) a=R;
         if(a>=Beta) return a;
@@ -86,17 +87,18 @@ double AI::AlphaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
     return a;
 }
 
-double AI::BetaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
+
+double AI::BetaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
     if(depth==0) return S0.Tablescore(who);
 
-    int b=Beta;
+    double b=Beta;
 
     vector<minishogi> V=NextMoves(S0,!who);
 
     for(int i=0; i<V.size(); i++)
     {
-        int R=AlphaCut(V[i],Alpha,b,depth-1,who);
+        double R=AlphaCut(V[i],Alpha,b,depth-1,who);
 
         if(R<b) b=R;
         if(b<=Alpha) return b;
@@ -105,10 +107,10 @@ double AI::BetaCut(minishogi &S0,int Alpha,int Beta,int depth,bool who)
     return b;
 }
 
-minishogi AI::ABSearch(minishogi &S0,int Alpha,int Beta,int depth,bool who)
+minishogi AI::ABSearch(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
 
-    int a=Alpha;
+    double a=Alpha;
 
     minishogi Sg;
 
@@ -116,7 +118,7 @@ minishogi AI::ABSearch(minishogi &S0,int Alpha,int Beta,int depth,bool who)
 
     for(int i=0; i<V.size(); i++)
     {
-        int R=BetaCut(V[i],a,Beta,depth-1,who);
+        double R=BetaCut(V[i],a,Beta,depth-1,who);
 
         if(R>a)
         {
@@ -147,7 +149,7 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
         for(int i=1;i<10;i++)
         {
             //judge if minions[i] is exist
-            S.minions[i]+=learningRATE*(VT-Vt);
+            S.MinionsWeight[i]+=learningRATE*(VT-Vt);
         }
     }
 

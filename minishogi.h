@@ -28,6 +28,10 @@ public:
 	bool movable[5][5];
     double minions[10]={0}; //feature value of minions
 
+	//states & features
+	bool Minions[10];
+	double MinionsWeight[10];
+
 	//table function
 	char GetChess(int, int);
 	void PutChess(int, int, char);
@@ -36,7 +40,7 @@ public:
 	bool IsEnemy(int,int,bool);
 	bool IsFriend(int,int,bool);
 	bool IsEmpty();
-	double Tablescore(bool);
+	double TableScore(bool);
 
 	//movement function
 	bool movement(int, int, int, int, bool);
