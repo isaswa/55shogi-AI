@@ -22,7 +22,19 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                 {
                     if(S0.A[j])
                     {
+
                         S2=S0;
+                        if(j=5)
+                        {
+                            if((i%5)==4) break;
+                            int a=0;
+                            for(int t=0;t<5;t++)
+                            {
+                                if(S0.GetChess(i/5,t)=='W'||S0.GetChess(i/5,t)=='w')
+                                    a++;
+                            }
+                            if(a!=0) break;
+                        }
                         S2.hit(j,i/5,i%5,0);
                         V.push_back(S2);
                     }
@@ -34,9 +46,25 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                 {
                     if(S0.B[j])
                     {
+                        if(S0.A[j])
+                    {
+                        S2=S0;
+                        if(j=5)
+                        {
+
+                            if((i%5)==0) break;
+                            int a=0;
+                            for(int t=0;t<5;t++)
+                            {
+                                if(S0.GetChess(i/5,t)=='W'||S0.GetChess(i/5,t)=='w')
+                                    a++;
+                            }
+                            if(a!=0) break;
+                        }
                         S2=S0;
                         S2.hit(j,i/5,i%5,1);
                         V.push_back(S2);
+                    }
                     }
                 }
             }
@@ -70,7 +98,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
 
 double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
-    if(depth==0) return S0.Tablescore(who);
+    if(depth==0) return S0.TableScore(who);
 
     double a=Alpha;
 
@@ -90,7 +118,7 @@ double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 
 double AI::BetaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
-    if(depth==0) return S0.Tablescore(who);
+    if(depth==0) return S0.TableScore(who);
 
     double b=Beta;
 
@@ -135,7 +163,7 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
 {
     minishogi ST=state.top();
     state.pop();
-    double VT=ST.Tablescore(id);
+    double VT=ST.TableScore(id);
 
     minishogi St;
     double Vt;
@@ -144,7 +172,7 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
     {
         St=state.top();
         state.pop();
-        Vt=St.Tablescore(id);
+        Vt=St.TableScore(id);
 
         for(int i=1;i<10;i++)
         {

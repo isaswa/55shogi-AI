@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <stack>
+#include <map>
 
 using namespace std;
 
@@ -26,10 +27,9 @@ public:
 	bool controlA[5][5];
 	bool controlB[5][5];
 	bool movable[5][5];
-    double minions[10]={0}; //feature value of minions
 
 	//states & features
-	bool Minions[10];
+	short Minions[10]={0};
 	double MinionsWeight[10];
 
 	//table function
@@ -41,6 +41,7 @@ public:
 	bool IsFriend(int,int,bool);
 	bool IsEmpty();
 	double TableScore(bool);
+	void GetMinionState(bool);
 
 	//movement function
 	bool movement(int, int, int, int, bool);
