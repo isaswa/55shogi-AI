@@ -7,7 +7,7 @@ using namespace std;
 //K=king=0 G=kin=1 S=silver=2
 //C=croS=3 F=fly=4 W=warrior=5
 //upgrade: S->T C->H F->U W->X
-//A side:small-alphabet, B side:big
+//A side:lower-alphabet, B side:upper
 
 minishogi AImove(AI, minishogi,bool);
 void AIgame();
@@ -16,7 +16,7 @@ void test();
 
 
 int main()
-{
+ {
 	//game(0);
 	AIgame();
 	//test();
@@ -324,9 +324,11 @@ void test()
 	minishogi S;
 	S.initial();
 	S.PrintTable();
-	S.initialMovable();
-	S.GetMovable(2,4);
-	S.PrintMovable();
+	S.GetMinionState(0);
+	for(int i=0;i<10;i++) printf("minions[%d]=%d\n",i,S.Minions[i]);
+	//S.initialMovable();
+	//S.GetMovable(2,4);
+	//S.PrintMovable();
 	//S.canmove_croS(2,2,0);
 	//int a; scanf("%d", &a);
 	//print_shogi(x);

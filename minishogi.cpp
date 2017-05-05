@@ -1,5 +1,23 @@
 #include "minishogi.h"
 
+pair<int,char> TYPE[]={
+pair<int,char>(0,'K'), pair<int,char>(1,'G'),
+pair<int,char>(2,'S'), pair<int,char>(3,'C'),
+pair<int,char>(4,'F'), pair<int,char>(5,'W'),
+pair<int,char>(6,'T'), pair<int,char>(7,'H'),
+pair<int,char>(8,'U'), pair<int,char>(9,'X'),
+
+pair<int,char>(10,'k'), pair<int,char>(11,'g'),
+pair<int,char>(12,'s'), pair<int,char>(13,'c'),
+pair<int,char>(14,'f'), pair<int,char>(15,'w'),
+pair<int,char>(16,'t'), pair<int,char>(17,'h'),
+pair<int,char>(18,'u'), pair<int,char>(19,'x')
+};
+
+//0-9(upper), 10-19(lower)
+map<int,char> TypeINDEX(TYPE, TYPE+sizeof(TYPE)/sizeof(pair<int,char>) );
+
+
 char minishogi::GetChess(int x0, int y0)
 {
 	return table[x0][y0];
@@ -93,7 +111,7 @@ bool minishogi::IsFriend(int x,int y,bool who)
     return 0;
 }
 
-double minishogi::Tablescore(bool who)
+double minishogi::TableScore(bool who)
 {
     double R=0;
 
@@ -104,32 +122,28 @@ double minishogi::Tablescore(bool who)
     {
         switch(table[i/5][i%5])
         {
-        case 'G' : R+=(who ? minions[1] : -minions[1]); break;
-        case 'S' : R+=(who ? minions[2] : -minions[2]); break;
-        case 'C' : R+=(who ? minions[3] : -minions[3]); break;
-        case 'F' : R+=(who ? minions[4] : -minions[4]); break;
-        case 'W' : R+=(who ? minions[5] : -minions[5]); break;
-        case 'T' : R+=(who ? minions[6] : -minions[6]); break;
-        case 'X' : R+=(who ? minions[7] : -minions[7]); break;
-        case 'U' : R+=(who ? minions[8] : -minions[8]); break;
-        case 'H' : R+=(who ? minions[9] : -minions[9]); break;
-
-        case 'g' : R+=(!who ? minions[1] : -minions[1]); break;
-        case 's' : R+=(!who ? minions[2] : -minions[2]); break;
-        case 'c' : R+=(!who ? minions[3] : -minions[3]); break;
-        case 'f' : R+=(!who ? minions[4] : -minions[4]); break;
-        case 'w' : R+=(!who ? minions[5] : -minions[5]); break;
-        case 't' : R+=(!who ? minions[6] : -minions[6]); break;
-        case 'x' : R+=(!who ? minions[7] : -minions[7]); break;
-        case 'u' : R+=(!who ? minions[8] : -minions[8]); break;
-        case 'h' : R+=(!who ? minions[9] : -minions[9]); break;
-
-        default: break;
+            //case (TypeINDEX.): +-MinionsWeight[]
+            break;
         }
 
     }
 
     return R;
+}
+
+void minishogi::GetMinionState(bool who)
+{
+    for(int i=0;i<10;i++) Minions[i]=0;
+
+    for(int i=0;i<25;i++)
+    {
+        if(table[i/5][i%5]!=0)
+            for(int j=(10-who*10); j<(20-who*10); j++)
+            {
+                if(table[i/5][i%5]==TypeINDEX[j])
+                    Minions[j%10]++;
+            }
+    }
 }
 
 bool minishogi::Move_K( int x1, int y1, int x2, int y2, bool who)
