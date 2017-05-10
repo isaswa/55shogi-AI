@@ -95,7 +95,6 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
     return V;
 }
 
-
 double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
     if(depth==0) return S0.TableScore(who);
@@ -159,6 +158,8 @@ minishogi AI::ABSearch(minishogi &S0,double Alpha,double Beta,int depth,bool who
     return Sg;
 }
 
+/**********TD*********/
+
 void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
 {
     minishogi ST=state.top();
@@ -181,4 +182,63 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
         }
     }
 
+}
+
+/*********mcts********/
+
+node* AI::Selection(node* root)
+vo
+{
+    vector<double> UCT;
+
+    for(int i=0; i<(*root).ChildNode.size(); i++)
+    {
+        if( (*(*root).ChildNode[i]).TryTimes==0 )
+        {
+            UCT.push_back(INF);
+            break;
+        }
+        else
+        {
+            UCT.push_back( (double)(*(*root).ChildNode[i]).WinTimes/(*(*root).ChildNode[i]).TryTimes
+                          +sqrt( 2*log(*root.TryTimes)/(*(*root).ChildNode[i]).TryTimes ) );
+        }
+    }
+
+    vector<double>::iterator MaxLocation=max_element(UCT,UCT+UCT.size());
+    int index=distance(UCT.begin(),MaxLocation);
+
+    return (*root).ChildNode[index];
+}
+
+void AI::Update(node* leaf,bool ifWin)
+{
+    for(node* i=leaf; i!=NULL; i=(*i).FatherNode)
+    {
+        (*i).TryTimes+=1;
+        (*i).WinTimes+=ifWin;
+        ifWin=!ifWin;
+    }
+}
+
+void AI::PlayOneSequence(node* root,bool id)
+{
+    node* CurrentNode=root;
+
+    while( (*CurrentNode).ChildNode.size()!=0 )
+        CurrentNode=Selection(CurrentNode);
+
+    bool ifWin=Simulation(CurrentNode,id);
+
+    Update(CurrentNode,ifWin);
+}
+
+bool AI::Simulation(node* ThisNode,bool id)
+{
+    //san ji!pinchi!
+}
+
+minishogi AI::MCTS(minishogi &S0,int Times,bool id)
+{
+    //mcts
 }

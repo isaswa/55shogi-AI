@@ -4,6 +4,8 @@
 #include <vector>
 #include <stack>
 #include <map>
+#include <algorithm>
+#include <time.h>
 
 using namespace std;
 
@@ -76,6 +78,26 @@ public:
 	void Movable_U(int,int,bool);
 	void Movable_W(int,int,bool);
 	void PrintMovable();
+};
+
+class node
+{
+private:
+
+    minishogi Shogi;
+    bool id;
+
+public:
+
+    node* FatherNode=NULL;
+    vector<node*> ChildNode;
+    int TryTimes=0;
+    int WinTimes=0;
+
+    void SetTable(minishogi);
+    void SetID(bool);
+    void FreeAll(node*);
+
 };
 
 #endif

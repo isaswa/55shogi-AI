@@ -22,10 +22,15 @@ public:
     double BetaCut(minishogi & ,double ,double ,int ,bool);
 	minishogi ABSearch(minishogi & ,double ,double ,int ,bool);
 
-
-
 	//TD-learning
 	void TD1(stack<minishogi> ,bool ,bool);
+
+	//mcts
+    node* Selection(node*);
+    void Update(node* ,bool);
+    void PlayOneSequence(node* ,bool);
+    bool Simulation(node* ,bool);
+    minishogi MCTS(minishogi & ,int ,bool);
 
 };
 

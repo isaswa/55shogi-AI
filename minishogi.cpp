@@ -900,3 +900,23 @@ void minishogi::PrintMovable()
 		printf("\n  -----------\n");
 	}
 }
+
+/*****************node**********************/
+
+void node::SetTable(minishogi S0)
+{
+    Shogi=S0;
+}
+
+void node::SetID(bool id0)
+{
+    id=id0;
+}
+
+void node::FreeAll(node* root)
+{
+    for(int i=0; i<(*root).ChildNode.size(); i++)
+        FreeAll( (*root).ChildNode[i] );
+
+    delete root;
+}
