@@ -26,7 +26,8 @@ int main()
 minishogi AImove(AI a0, minishogi S0,bool id)
 {
     a0.AssignTable(S0);
-    S0=a0.ABSearch(S0,-INF,INF,4,id);
+    //S0=a0.ABSearch(S0,-INF,INF,4,id);
+    S0=a0.MCTS(S0,1000,id);
     return S0;
 }
 

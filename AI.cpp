@@ -177,7 +177,7 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
 
         for(int i=1;i<10;i++)
         {
-            //judge if minions[i] is exist
+            //not done yet
             S.MinionsWeight[i]+=learningRATE*(VT-Vt);
         }
     }
@@ -187,58 +187,114 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
 /*********mcts********/
 
 node* AI::Selection(node* root)
-vo
 {
+    //build childs when reaching leaf first
+    if(root->ChildNode.empty())
+    {
+        minishogi S=root->GetTable();
+        vector<minishogi> next=NextMoves(S,root->GetID());
+        node* child=new node;
+        for(int i=0; i<next.size(); i++)
+        {
+            child->SetTable(next[i]);
+            child->SetID(!root->GetID());
+            child->FatherNode=root;
+            root->ChildNode.push_back(child);
+        }
+    }
+
     vector<double> UCT;
 
-    for(int i=0; i<(*root).ChildNode.size(); i++)
+    //select
+    for(int i=0; i<root->ChildNode.size(); i++)
     {
-        if( (*(*root).ChildNode[i]).TryTimes==0 )
+        if( root->ChildNode[i]->TryTimes==0 )
         {
             UCT.push_back(INF);
             break;
         }
         else
         {
-            UCT.push_back( (double)(*(*root).ChildNode[i]).WinTimes/(*(*root).ChildNode[i]).TryTimes
-                          +sqrt( 2*log(*root.TryTimes)/(*(*root).ChildNode[i]).TryTimes ) );
+            UCT.push_back( (double)root->ChildNode[i]->WinTimes/root->ChildNode[i]->TryTimes
+                          +sqrt( 2*log(root->TryTimes)/root->ChildNode[i]->TryTimes ) );
         }
     }
 
-    vector<double>::iterator MaxLocation=max_element(UCT,UCT+UCT.size());
+    vector<double>::iterator MaxLocation=max_element(UCT.begin(),UCT.begin()+UCT.size());
+
     int index=distance(UCT.begin(),MaxLocation);
 
-    return (*root).ChildNode[index];
+    return root->ChildNode[index];
 }
 
 void AI::Update(node* leaf,bool ifWin)
 {
-    for(node* i=leaf; i!=NULL; i=(*i).FatherNode)
+    for(node* i=leaf; i!=NULL; i=i->FatherNode)
     {
-        (*i).TryTimes+=1;
-        (*i).WinTimes+=ifWin;
+        i->TryTimes+=1;
+        i->WinTimes+=ifWin;
         ifWin=!ifWin;
     }
 }
 
-void AI::PlayOneSequence(node* root,bool id)
+bool AI::Simulation(node* ThisNode)
+{
+    srand(time(NULL));
+
+    bool turn=ThisNode->GetID();
+    minishogi S=ThisNode->GetTable();
+    vector<minishogi> next;
+
+    while(S.win()!=1)
+    {
+        next=NextMoves(S,turn);
+        S=next[rand() % next.size()];
+        turn=!turn;
+    }
+
+    if( (ThisNode->GetID()&&S.B[0]) || ((!ThisNode->GetID())&&S.A[0]) ) return 1;
+    return 0;
+}
+
+void AI::PlayOneSequence(node* root)
 {
     node* CurrentNode=root;
+    bool turn=root->GetID();
 
-    while( (*CurrentNode).ChildNode.size()!=0 )
+    do
+    {
         CurrentNode=Selection(CurrentNode);
+        turn=!turn;
+    }
+    while( CurrentNode->ChildNode.size()!=0 );
 
-    bool ifWin=Simulation(CurrentNode,id);
+    bool ifWin=Simulation(CurrentNode);
 
     Update(CurrentNode,ifWin);
 }
 
-bool AI::Simulation(node* ThisNode,bool id)
-{
-    //san ji!pinchi!
-}
-
 minishogi AI::MCTS(minishogi &S0,int Times,bool id)
 {
-    //mcts
+    node* Root=new node;
+    Root->SetTable(S0);
+    Root->SetID(id);
+
+    int n=Times;
+    while(n--) PlayOneSequence(Root);
+
+    int index=0,MaxNi=0;
+    for(int i=0; i<Root->ChildNode.size(); i++)
+        if( Root->ChildNode[i]->TryTimes > MaxNi )
+        {
+            index=i;
+            MaxNi=Root->ChildNode[i]->TryTimes;
+        }
+
+    //haven't build child's when first reaching leaf
+    minishogi S1=Root->ChildNode[index]->GetTable();
+
+    Root->FreeTree(Root);
+
+    return S1;
+
 }

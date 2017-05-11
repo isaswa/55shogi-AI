@@ -96,7 +96,9 @@ public:
 
     void SetTable(minishogi);
     void SetID(bool);
-    void FreeAll(node*);
+    minishogi GetTable();
+    bool GetID();
+    void FreeTree(node*);
 
 };
 

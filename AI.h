@@ -28,8 +28,8 @@ public:
 	//mcts
     node* Selection(node*);
     void Update(node* ,bool);
-    void PlayOneSequence(node* ,bool);
-    bool Simulation(node* ,bool);
+    bool Simulation(node*);
+    void PlayOneSequence(node*);
     minishogi MCTS(minishogi & ,int ,bool);
 
 };

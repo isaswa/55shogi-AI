@@ -370,12 +370,12 @@ bool minishogi::win()
 {
 	if (A[0] != 0)
 	{
-		printf("A win!!\n");
+		//printf("A win!!\n");
 		return 1;
 	}
 	if (B[0] != 0)
 	{
-		printf("B win!!\n");
+		//printf("B win!!\n");
 		return 1;
 	}
 	return 0;
@@ -913,10 +913,20 @@ void node::SetID(bool id0)
     id=id0;
 }
 
-void node::FreeAll(node* root)
+minishogi node::GetTable()
 {
-    for(int i=0; i<(*root).ChildNode.size(); i++)
-        FreeAll( (*root).ChildNode[i] );
+    return Shogi;
+}
+
+bool node::GetID()
+{
+    return id;
+}
+
+void node::FreeTree(node* root)
+{
+    for(int i=0; i<root->ChildNode.size(); i++)
+        FreeTree(root->ChildNode[i]);
 
     delete root;
 }
