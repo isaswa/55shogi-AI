@@ -6,10 +6,29 @@ void AI::AssignTable(minishogi &S0)
     S=S0;
 }
 
+//tons of bug
 vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
 {
     minishogi S2;
     vector<minishogi> V;
+
+    //policy
+
+    //legal move
+        //illegal judge
+        //capture move
+            //capturing judge
+            //non-capture move
+        //promotion judge
+            //promote
+            //not promote
+
+    //legal hit
+        //illegal judge
+            //two pawn
+            //pawn-hitting checkmate
+            //sen-nichi-te (hard)
+
 
     for(int i=0;i<25;i++)
     {
@@ -24,7 +43,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                     {
 
                         S2=S0;
-                        if(j=5)
+                        if(j==5)
                         {
                             if((i%5)==4) break;
                             int a=0;
@@ -49,7 +68,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                         if(S0.A[j])
                     {
                         S2=S0;
-                        if(j=5)
+                        if(j==5)
                         {
 
                             if((i%5)==0) break;
@@ -113,7 +132,6 @@ double AI::AlphaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 
     return a;
 }
-
 
 double AI::BetaCut(minishogi &S0,double Alpha,double Beta,int depth,bool who)
 {
@@ -186,26 +204,27 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
 
 /*********mcts********/
 
+void AI::Expand(node* leaf)
+{
+    minishogi S=leaf->GetTable();
+    vector<minishogi> next=NextMoves(S,leaf->GetID());
+
+    for(int i=0; i<next.size(); i++)
+    {
+        node* child=new node;
+        child->SetTable(next[i]);
+        child->SetID(!leaf->GetID());
+        child->FatherNode=leaf;
+        leaf->ChildNode.push_back(child);
+    }
+}
+
 node* AI::Selection(node* root)
 {
-    //build childs when reaching leaf first
     if(root->ChildNode.empty())
-    {
-        minishogi S=root->GetTable();
-        vector<minishogi> next=NextMoves(S,root->GetID());
-        node* child=new node;
-        for(int i=0; i<next.size(); i++)
-        {
-            child->SetTable(next[i]);
-            child->SetID(!root->GetID());
-            child->FatherNode=root;
-            root->ChildNode.push_back(child);
-        }
-    }
+        Expand(root);
 
     vector<double> UCT;
-
-    //select
     for(int i=0; i<root->ChildNode.size(); i++)
     {
         if( root->ChildNode[i]->TryTimes==0 )
@@ -215,14 +234,14 @@ node* AI::Selection(node* root)
         }
         else
         {
-            UCT.push_back( (double)root->ChildNode[i]->WinTimes/root->ChildNode[i]->TryTimes
-                          +sqrt( 2*log(root->TryTimes)/root->ChildNode[i]->TryTimes ) );
+            UCT.push_back( (double)root->ChildNode[i]->WinTimes/(double)root->ChildNode[i]->TryTimes
+                          +sqrt( 2.0*log( (double)root->TryTimes )/(double)root->ChildNode[i]->TryTimes ) );
         }
     }
 
-    vector<double>::iterator MaxLocation=max_element(UCT.begin(),UCT.begin()+UCT.size());
-
-    int index=distance(UCT.begin(),MaxLocation);
+    int index=0;
+    for(int i=0; i<UCT.size(); i++)
+        if(UCT[i]>UCT[index]) index=i;
 
     return root->ChildNode[index];
 }
@@ -268,6 +287,7 @@ void AI::PlayOneSequence(node* root)
     }
     while( CurrentNode->ChildNode.size()!=0 );
 
+
     bool ifWin=Simulation(CurrentNode);
 
     Update(CurrentNode,ifWin);
@@ -290,8 +310,14 @@ minishogi AI::MCTS(minishogi &S0,int Times,bool id)
             MaxNi=Root->ChildNode[i]->TryTimes;
         }
 
-    //haven't build child's when first reaching leaf
     minishogi S1=Root->ChildNode[index]->GetTable();
+
+    //test
+    /*
+    printf("root's children:%d\n",Root->ChildNode.size());
+    for(int i=0; i<Root->ChildNode.size(); i++)
+        printf("child[%d] TryTimes:%d\n",i,Root->ChildNode[i]->TryTimes);
+    */
 
     Root->FreeTree(Root);
 

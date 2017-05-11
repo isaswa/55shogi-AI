@@ -26,6 +26,7 @@ public:
 	void TD1(stack<minishogi> ,bool ,bool);
 
 	//mcts
+	void Expand(node*);
     node* Selection(node*);
     void Update(node* ,bool);
     bool Simulation(node*);

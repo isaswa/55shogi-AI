@@ -10,6 +10,7 @@ using namespace std;
 //A side:lower-alphabet, B side:upper
 
 minishogi AImove(AI, minishogi,bool);
+void AIpk();
 void AIgame();
 void game(bool);
 void test();
@@ -18,7 +19,8 @@ void test();
 int main()
  {
 	//game(0);
-	AIgame();
+	//AIgame();
+	AIpk();
 	//test();
 	return 0;
 }
@@ -27,8 +29,25 @@ minishogi AImove(AI a0, minishogi S0,bool id)
 {
     a0.AssignTable(S0);
     //S0=a0.ABSearch(S0,-INF,INF,4,id);
-    S0=a0.MCTS(S0,1000,id);
+    S0=a0.MCTS(S0,5000,id); //effective
     return S0;
+}
+
+void AIpk()
+{
+    AI A1,A2;
+    minishogi S;
+    bool id=0, End=0;
+    S.initial();
+
+    while(!End)
+    {
+        if(!id) S=AImove(A1,S,0);
+        else{ S=AImove(A2,S,1);  }
+        S.PrintTable();
+        id=!id;
+        End=S.win();
+    }
 }
 
 void AIgame()

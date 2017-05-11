@@ -32,7 +32,17 @@ public:
 
 	//states & features
 	short Minions[10]={0};
+	short BigChessForce[4]={0}; //{c,f,C,F}
+    short SpecialForm[2]={0};
 	double MinionsWeight[10];
+    double HoldWeight[6];
+    double BigChessForceWeight[4];
+    double SpecialFormWeight[2];
+
+    //feature generating function
+	void GetMinionState(bool);
+	void GetBigChessForce();
+	void GetSpecialForm(bool);
 
 	//table function
 	char GetChess(int, int);
@@ -43,7 +53,7 @@ public:
 	bool IsFriend(int,int,bool);
 	bool IsEmpty();
 	double TableScore(bool);
-	void GetMinionState(bool);
+
 
 	//movement function
 	bool movement(int, int, int, int, bool);
@@ -55,7 +65,7 @@ public:
 	bool Move_W(int, int, int, int, bool);
 
 	//game body operation function
-	bool Take(int, int, bool);
+	void Take(int, int, bool);
 	int HitIndex(char, int, int, bool);
 	void hit(int, int, int, bool);
 	int IFupgrade(char, int, int, int);

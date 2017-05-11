@@ -82,7 +82,8 @@ void minishogi::PrintTable()
 
 		printf("\n  -----------\n");
 	}
-	printf("%x   ",table[1][1]);
+	//what's this?
+	//printf("%x   ",table[1][1]);
 }
 
 bool minishogi::IsEnemy(int x,int y,bool who)
@@ -109,41 +110,6 @@ bool minishogi::IsFriend(int x,int y,bool who)
     {   if(table[x][y] > 97) return 1; }
 
     return 0;
-}
-
-double minishogi::TableScore(bool who)
-{
-    double R=0;
-
-    if( who && A[0] || !who && B[0] ) return R=INF;
-    if( who && B[0] || !who && A[0] ) return R=-INF;
-
-    for(int i=0;i<25;i++)
-    {
-        switch(table[i/5][i%5])
-        {
-            //case (TypeINDEX.): +-MinionsWeight[]
-            break;
-        }
-
-    }
-
-    return R;
-}
-
-void minishogi::GetMinionState(bool who)
-{
-    for(int i=0;i<10;i++) Minions[i]=0;
-
-    for(int i=0;i<25;i++)
-    {
-        if(table[i/5][i%5]!=0)
-            for(int j=(10-who*10); j<(20-who*10); j++)
-            {
-                if(table[i/5][i%5]==TypeINDEX[j])
-                    Minions[j%10]++;
-            }
-    }
 }
 
 bool minishogi::Move_K( int x1, int y1, int x2, int y2, bool who)
@@ -248,10 +214,9 @@ bool minishogi::movement(int x1, int y1, int x2, int y2, bool who)
 }
 
 //take out the chess on (x,y)
-bool minishogi::Take(int x, int y, bool who)
+void minishogi::Take(int x, int y, bool who)
 {
-	if (table[x][y]==0) return 0;
-	if(!who)
+	if(table[x][y]!=0 && !who)
     {
         switch(table[x][y])
         {
@@ -929,4 +894,84 @@ void node::FreeTree(node* root)
         FreeTree(root->ChildNode[i]);
 
     delete root;
+}
+
+/***************features****************/
+
+void minishogi::GetMinionState(bool who)
+{
+    for(int i=0;i<10;i++) Minions[i]=0;
+
+    for(int i=0;i<25;i++)
+    {
+        if(table[i/5][i%5]!=0)
+            for(int j=(10-who*10); j<(20-who*10); j++)
+            {
+                if(table[i/5][i%5]==TypeINDEX[j])
+                    Minions[j%10]++;
+            }
+    }
+}
+
+//{c,f,C,F}
+void minishogi::GetBigChessForce()
+{
+    for(int i=0; i<4; i++) BigChessForce[i]=0;
+
+    for(int i=0; i<25; i++)
+    {
+        switch(table[i/5][i%5])
+        {
+        case 'c':
+        case 'h':
+            initialMovable();
+            Movable_C(i/5,i%5,0); //bug
+            for(int i=0; i<25; i++)
+                BigChessForce[0]+=movable[i/5][i%5];
+            continue;
+
+        case 'f':
+        case 'u':
+            initialMovable();
+            Movable_F(i/5,i%5,0);
+            for(int i=0; i<25; i++)
+                BigChessForce[1]+=movable[i/5][i%5];
+            continue;
+
+        case 'C':
+        case 'H':
+            initialMovable();
+            Movable_C(i/5,i%5,1);
+            for(int i=0; i<25; i++)
+                BigChessForce[2]+=movable[i/5][i%5];
+            continue;
+
+        case 'F':
+        case 'U':
+            initialMovable();
+            Movable_F(i/5,i%5,1);
+            for(int i=0; i<25; i++)
+                BigChessForce[3]+=movable[i/5][i%5];
+            continue;
+
+        default:
+            continue;
+        }
+    }
+}
+
+double minishogi::TableScore(bool who)
+{
+    double R=0;
+
+    if( (who&&A[0]) || (!who&&B[0]) ) return R=INF;
+    if( (who&&B[0]) || (!who&&A[0]) ) return R=-INF;
+
+    GetMinionState(who);
+    for(int i=1;i<10;i++) R+=Minions[i]*MinionsWeight[i];
+
+    GetMinionState(!who);
+    for(int i=1;i<10;i++) R-=Minions[i]*MinionsWeight[i];
+
+    return R;
 }
