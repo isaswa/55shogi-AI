@@ -37,7 +37,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
         {
             if(!who)
             {
-                for(int j=0;j<6;j++)
+                for(int j=0;j<5;j++)
                 {
                     if(S0.A[j])
                     {
@@ -45,14 +45,15 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                         S2=S0;
                         if(j==5)
                         {
-                            if((i%5)==4) break;
-                            int a=0;
+                            if((i%5)==0) break;
+                            bool a=false;
                             for(int t=0;t<5;t++)
                             {
-                                if(S0.GetChess(i/5,t)=='W'||S0.GetChess(i/5,t)=='w')
-                                    a++;
+                                if((S0.GetChess(i/5,t)=='W')||(S0.GetChess(i/5,t)=='w'))
+                                    a=true.;
                             }
                             if(a!=0) break;
+                            S0.checkking()
                         }
                         S2.hit(j,i/5,i%5,0);
                         V.push_back(S2);
@@ -71,12 +72,12 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                         if(j==5)
                         {
 
-                            if((i%5)==0) break;
-                            int a=0;
+                            if((i%5)==4) break;
+                            bool a=false;
                             for(int t=0;t<5;t++)
                             {
                                 if(S0.GetChess(i/5,t)=='W'||S0.GetChess(i/5,t)=='w')
-                                    a++;
+                                    a=true;
                             }
                             if(a!=0) break;
                         }
