@@ -975,3 +975,68 @@ double minishogi::TableScore(bool who)
 
     return R;
 }
+
+void minishogi::SaveHeuristic()
+{
+    fstream File;
+    File.open("heuristic.txt",ios::trunc); //clear data
+    File.open("heuristic.txt",ios::out);
+
+    for(int i=1; i<10; i++)
+        File << "M " << i << " " << MinionsWeight[i] << endl;
+
+    for(int i=1; i<6; i++)
+        File << "H " << i << " " << HoldWeight[i] << endl;
+
+    for(int i=0; i<4; i++)
+        File << "B " << i << " " << BigChessForceWeight[i] << endl;
+
+    for(int i=0; i<2; i++)
+        File << "S " << i << " " << SpecialFormWeight[i] << endl;
+
+    //test
+    printf("data Saved.\n");
+
+    File.close();
+}
+
+void minishogi::LoadHeuristic()
+{
+    fstream File;
+    File.open("heuristic.txt",ios::in);
+
+    char Type;
+    int index;
+    double Value;
+
+    while(File >> Type >> index >> Value)
+    {
+        switch(Type)
+        {
+        case 'M':
+            MinionsWeight[index]=Value;
+            continue;
+
+        case 'H':
+            HoldWeight[index]=Value;
+            continue;
+
+        case 'B':
+            BigChessForceWeight[index]=Value;
+            continue;
+
+        case 'S':
+            SpecialFormWeight[index]=Value;
+            continue;
+
+        default:
+            continue;
+        }
+    }
+
+    //test
+    printf("data Got.\n");
+
+    File.close();
+
+}

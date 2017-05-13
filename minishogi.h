@@ -6,6 +6,8 @@
 #include <map>
 #include <algorithm>
 #include <time.h>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -44,6 +46,10 @@ public:
 	void GetBigChessForce();
 	void GetSpecialForm(bool);
 
+	//heuristic file stream
+	void LoadHeuristic();
+	void SaveHeuristic();
+
 	//table function
 	char GetChess(int, int);
 	void PutChess(int, int, char);
@@ -70,6 +76,7 @@ public:
 	void hit(int, int, int, bool);
 	int IFupgrade(char, int, int, int);
 	bool win();
+	bool checkking();
 
 	//control table function
 	void initialControl();

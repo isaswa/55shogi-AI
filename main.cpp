@@ -20,8 +20,8 @@ int main()
  {
 	//game(0);
 	//AIgame();
-	AIpk();
-	//test();
+	//AIpk();
+	test();
 	return 0;
 }
 
@@ -344,8 +344,11 @@ void test()
 	minishogi S;
 	S.initial();
 	S.PrintTable();
-	S.GetMinionState(0);
-	for(int i=0;i<10;i++) printf("minions[%d]=%d\n",i,S.Minions[i]);
+	//S.SaveHeuristic();
+	//S.LoadHeuristic();
+	//for(int i=1; i<10; i++) cout << "MinionsWeight[" << i << "]=" << S.MinionsWeight[i] << endl;
+	//S.GetMinionState(0);
+	//for(int i=0;i<10;i++) printf("minions[%d]=%d\n",i,S.Minions[i]);
 	//S.initialMovable();
 	//S.GetMovable(2,4);
 	//S.PrintMovable();
