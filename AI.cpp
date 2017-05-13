@@ -41,8 +41,6 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                 {
                     if(S0.A[j])
                     {
-
-                        S2=S0;
                         if(j==5)
                         {
                             if((i%5)==0) break;
@@ -53,9 +51,9 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                                     a=true;
                             }
                             if(a!=0) break;
-                            //S0.checkking();
-                            //what?
+                           // S0.checkking()
                         }
+                        S2=S0;
                         S2.hit(j,i/5,i%5,0);
                         V.push_back(S2);
                     }
@@ -63,11 +61,10 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
             }
             else
             {
-                for(int j=0;j<5;j++)
+                for(int j=0;j<6;j++)
                 {
                     if(S0.B[j])
                     {
-                        S2=S0;
                         if(j==5)
                         {
 
@@ -80,6 +77,7 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                             }
                             if(a!=0) break;
                         }
+                        S2=S0;
                         S2.hit(j,i/5,i%5,1);
                         V.push_back(S2);
                     }
@@ -99,10 +97,36 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                 if(S0.movable[j/5][j%5])
                 {
                     S2=S0;
-                    if(S2.GetChess(j/5,j%5)!=0) S2.Take(j/5,j%5,who);
+                    if(S2.GetChess(j/5,j%5)!=0)
+                        S2.Take(j/5,j%5,who);
+                    int ug = S0.IFupgrade(S0.GetChess(j/5, j%5) + who*('a' - 'A'), j%5, who*4, who);
+                    if (ug == 2)
+                        {
+                            S2.PutChess(j/5, j%5, 't' - who*('a' - 'A'));
+                            S2.PutChess(i/5 , i%5 , 0);
+                            V.push_back(S2);
+                        }
+                    else if (ug == 3)
+                        {
+                            S2.PutChess(j/5, j%5, 'h' - who*('a' - 'A'));
+                            S2.PutChess(i/5 , i%5 , 0);
+                            V.push_back(S2);
+                        }
+                    else if (ug == 4)
+                        {
+                            S2.PutChess(j/5, j%5, 'u' - who*('a' - 'A'));
+                            S2.PutChess(i/5 , i%5 , 0);
+                            V.push_back(S2);
+                        }
+                    else if (ug == 5)
+                        {
+                            S2.PutChess(j/5, j%5, 'x' - who*('a' - 'A'));
+                            S2.PutChess(i/5 , i%5 , 0);
+                            V.push_back(S2);
+                        }
+
                     S2.PutChess(j/5 , j%5 , S2.GetChess(i/5,i%5) );
                     S2.PutChess(i/5 , i%5 , 0);
-
                     V.push_back(S2);
                 }
             }
@@ -194,7 +218,6 @@ void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
         for(int i=1;i<10;i++)
         {
             //not done yet
-            S.MinionsWeight[i]+=learningRATE*(VT-Vt);
         }
     }
 

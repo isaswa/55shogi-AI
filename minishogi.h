@@ -34,16 +34,16 @@ public:
 
 	//states & features
 	short Minions[10]={0};
-	short BigChessForce[4]={0}; //{c,f,C,F}
-    short SpecialForm[2]={0};
+	short BigChessForce[2]={0};
+    bool SpecialForm[2]={0}; //
 	double MinionsWeight[10];
     double HoldWeight[6];
-    double BigChessForceWeight[4];
+    double BigChessForceWeight[2];
     double SpecialFormWeight[2];
 
     //feature generating function
 	void GetMinionState(bool);
-	void GetBigChessForce();
+	void GetBigChessForce(bool);
 	void GetSpecialForm(bool);
 
 	//heuristic file stream

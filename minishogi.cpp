@@ -913,45 +913,39 @@ void minishogi::GetMinionState(bool who)
     }
 }
 
-//{c,f,C,F}
-void minishogi::GetBigChessForce()
+//{c,f}
+void minishogi::GetBigChessForce(bool who)
 {
     for(int i=0; i<4; i++) BigChessForce[i]=0;
 
     for(int i=0; i<25; i++)
     {
+        initialMovable();
+
         switch(table[i/5][i%5])
         {
-        case 'c':
-        case 'h':
-            initialMovable();
-            Movable_C(i/5,i%5,0); //bug
+        case ('c'-who*('a'-'A')):
+            Movable_C(i/5,i%5,who);
             for(int i=0; i<25; i++)
                 BigChessForce[0]+=movable[i/5][i%5];
             continue;
 
-        case 'f':
-        case 'u':
-            initialMovable();
-            Movable_F(i/5,i%5,0);
+        case ('h'-who*('a'-'A')):
+            Movable_H(i/5,i%5,who);
+            for(int i=0; i<25; i++)
+                BigChessForce[0]+=movable[i/5][i%5];
+            continue;
+
+        case ('f'-who*('a'-'A')):
+            Movable_F(i/5,i%5,who);
             for(int i=0; i<25; i++)
                 BigChessForce[1]+=movable[i/5][i%5];
             continue;
 
-        case 'C':
-        case 'H':
-            initialMovable();
-            Movable_C(i/5,i%5,1);
+        case ('u'-who*('a'-'A')):
+            Movable_U(i/5,i%5,who);
             for(int i=0; i<25; i++)
-                BigChessForce[2]+=movable[i/5][i%5];
-            continue;
-
-        case 'F':
-        case 'U':
-            initialMovable();
-            Movable_F(i/5,i%5,1);
-            for(int i=0; i<25; i++)
-                BigChessForce[3]+=movable[i/5][i%5];
+                BigChessForce[1]+=movable[i/5][i%5];
             continue;
 
         default:
@@ -960,18 +954,65 @@ void minishogi::GetBigChessForce()
     }
 }
 
+void minishogi::GetSpecialForm(bool who)
+{
+    for(int i=0; i<2; i++) SpecialForm[i]=0;
+
+    int x,y;
+
+    //find king
+    for(int i=0; i<25; i++)
+        if( table[i/5][i%5]== ('k'-who*('a'-'A')) )
+        {
+            x=i/5;
+            y=i%5;
+            break;
+        }
+
+    //king's "head"
+    y+=(who ? -1 : 1 );
+
+    //check if there's gold or silver
+    if( table[x][y]== ('g'-who*('a'-'A')) )
+    {
+        SpecialForm[0]=1;
+    }
+    else if( table[x][y]== ('s'-who*('a'-'A')) )
+    {
+        SpecialForm[1]=1;
+    }
+
+}
+
 double minishogi::TableScore(bool who)
 {
     double R=0;
 
+    //if king is dead
     if( (who&&A[0]) || (!who&&B[0]) ) return R=INF;
     if( (who&&B[0]) || (!who&&A[0]) ) return R=-INF;
 
+    //minions
     GetMinionState(who);
-    for(int i=1;i<10;i++) R+=Minions[i]*MinionsWeight[i];
-
+    for(int i=1;i<10;i++) R+=(double)Minions[i]*MinionsWeight[i];
     GetMinionState(!who);
-    for(int i=1;i<10;i++) R-=Minions[i]*MinionsWeight[i];
+    for(int i=1;i<10;i++) R-=(double)Minions[i]*MinionsWeight[i];
+
+    //hold
+    for(int i=1;i<6;i++) R+=(double)(A[i]*HoldWeight[i])*(1-2*who);
+    for(int i=1;i<6;i++) R-=(double)(B[i]*HoldWeight[i])*(1-2*who);
+
+    //Big Chess
+    GetBigChessForce(who);
+    for(int i=0;i<2;i++) R+=(double)BigChessForce[i]*BigChessForceWeight[i];
+    GetBigChessForce(!who);
+    for(int i=0;i<2;i++) R+=(double)BigChessForce[i]*BigChessForceWeight[i];
+
+    //Special Form
+    GetSpecialForm(who);
+    for(int i=0;i<2;i++) R+=(double)SpecialForm[i]*SpecialFormWeight[i];
+    GetSpecialForm(!who);
+    for(int i=0;i<2;i++) R-=(double)SpecialForm[i]*SpecialFormWeight[i];
 
     return R;
 }
@@ -995,7 +1036,7 @@ void minishogi::SaveHeuristic()
         File << "S " << i << " " << SpecialFormWeight[i] << endl;
 
     //test
-    printf("data Saved.\n");
+    //printf("data Saved.\n");
 
     File.close();
 }
@@ -1035,7 +1076,7 @@ void minishogi::LoadHeuristic()
     }
 
     //test
-    printf("data Got.\n");
+    //printf("data Got.\n");
 
     File.close();
 
