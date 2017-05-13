@@ -49,10 +49,11 @@ vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
                             bool a=false;
                             for(int t=0;t<5;t++)
                             {
-                                if( (S0.GetChess(i/5,t)=='W') || (S0.GetChess(i/5,t)=='w') )
-                                    a=true;
+                                if((S0.GetChess(i/5,t)=='W')||(S0.GetChess(i/5,t)=='w'))
+                                    a=true.;
                             }
                             if(a!=0) break;
+                            S0.checkking()
                         }
                         S2.hit(j,i/5,i%5,0);
                         V.push_back(S2);
