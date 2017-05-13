@@ -76,7 +76,7 @@ public:
 	void hit(int, int, int, bool);
 	int IFupgrade(char, int, int, int);
 	bool win();
-	bool checkking(minishogi &);
+	bool checkking();
 
 	//control table function
 	void initialControl();
