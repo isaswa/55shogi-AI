@@ -10,7 +10,8 @@ using namespace std;
 //A side:lower-alphabet, B side:upper
 
 minishogi AImove(AI, minishogi,bool);
-void AIpk();
+void TrainTD(int);
+void AIpk(int);
 void AIgame();
 void game(bool);
 void test();
@@ -18,36 +19,108 @@ void test();
 
 int main()
  {
+    //TrainTD(100);
 	//game(0);
 	//AIgame();
-	//AIpk();
-	 test();
+	AIpk(100);
+    //test();
 	return 0;
 }
 
 minishogi AImove(AI a0, minishogi S0,bool id)
 {
     a0.AssignTable(S0);
-    //S0=a0.ABSearch(S0,-INF,INF,4,id);
-    S0=a0.MCTS(S0,5000,id); //effective
+    S0=a0.ABSearch(S0,-INF,INF,6,id);
+    //S0=a0.MCTS(S0,5000,id); //effective
     return S0;
 }
 
-void AIpk()
+void TrainTD(int Games)
 {
     AI A1,A2;
     minishogi S;
     bool id=0, End=0;
-    S.initial();
 
-    while(!End)
+    int GameNum=1;
+    int Run=Games;
+
+    while(Run--)
     {
-        if(!id) S=AImove(A1,S,0);
-        else{ S=AImove(A2,S,1);  }
-        S.PrintTable();
-        id=!id;
-        End=S.win();
+        S.initial();
+
+        //a game
+        while(!End)
+        {
+            if(!id)
+            {
+                S=A1.ABSearch(S,-INF,INF,4,id);
+                A1.TDbuffer.push(S);
+            }
+            else
+            {
+                S=A2.ABSearch(S,-INF,INF,4,id);
+                A2.TDbuffer.push(S);
+            }
+            S.PrintTable();
+            id=!id;
+            End=S.win();
+        }
+
+    printf("Game played #%d\n",GameNum++);
+
+    //train
+    bool if_A_WIN=0;
+    if(S.A[0]==1) if_A_WIN=1;
+
+    A1.TD1(if_A_WIN,0);
+    A2.TD1(!if_A_WIN,1);
+
     }
+}
+
+void AIpk(int Games)
+{
+
+    AI P_abs,P_mcts;
+    minishogi S;
+    bool id=0, End=0;
+
+    int GameNum=1;
+    int Run=Games;
+    int mctsWINs=0;
+
+    while(Run--)
+    {
+        S.initial();
+        S.LoadHeuristic();
+        End=0;
+
+        //a game
+        while(!End)
+        {
+            if(!id)
+            {
+                S=P_abs.ABSearch(S,-INF,INF,4,id);
+            }
+            else
+            {
+                S=P_mcts.MCTS(S,1000,id);
+            }
+
+            S.PrintTable();
+            id=!id;
+            End=S.win();
+        }
+
+    printf("Game played #%d\n",GameNum++);
+
+    if(S.B[0]==1) mctsWINs++;
+
+    }
+
+    cout << endl << "MCTS win rate: " << (float)mctsWINs/(float)Games << endl;
+
+    system("pause");
 }
 
 void AIgame()

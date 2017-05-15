@@ -9,129 +9,123 @@ void AI::AssignTable(minishogi &S0)
 //tons of bug
 vector<minishogi> AI::NextMoves(minishogi &S0,bool who)
 {
+    minishogi S1=S0;
     minishogi S2;
     vector<minishogi> V;
 
-    //policy
+    int x,y;
 
-    //legal move
-        //illegal judge
-        //capture move
-            //capturing judge
-            //non-capture move
-        //promotion judge
-            //promote
-            //not promote
-
-    //legal hit
-        //illegal judge
-            //two pawn
-            //pawn-hitting checkmate
-            //sen-nichi-te (hard)
-
-
-    for(int i=0;i<25;i++)
+    //move
+    for(x=0; x<5; x++)
     {
-        //hit
-        if(S0.GetChess(i/5,i%5)==0)
+    for(y=0; y<5; y++)
+    {
+        //choose my chess
+        if(S1.IsFriend(x,y,who))
         {
-            if(!who)
+            S1.initialMovable();
+            S1.GetMovable(x,y);
+
+            //move search
+            for(int Aim=0; Aim<25; Aim++)
             {
-                for(int j=0;j<5;j++)
+                S2=S1;
+
+                //legal move
+                if(S2.movable[Aim%5][Aim/5])
                 {
-                    if(S0.A[j])
-                    {
-                        if(j==5)
-                        {
-                            if((i%5)==0) break;
-                            bool a=false;
-                            for(int t=0;t<5;t++)
-                            {
-                                if((S0.GetChess(i/5,t)=='W')||(S0.GetChess(i/5,t)=='w'))
-                                    a=true;
-                            }
-                            if(a!=0) break;
-                           // S0.checkking()
-                        }
-                        S2=S0;
-                        S2.hit(j,i/5,i%5,0);
-                        V.push_back(S2);
-                    }
-                }
-            }
-            else
-            {
-                for(int j=0;j<6;j++)
-                {
-                    if(S0.B[j])
-                    {
-                        if(j==5)
-                        {
+                    //capture judge
+                    if(S2.IsEnemy(Aim%5,Aim/5,who))
+                        S2.Take(Aim%5,Aim/5,who);
 
-                            if((i%5)==4) break;
-                            bool a=false;
-                            for(int t=0;t<5;t++)
-                            {
-                                if(S0.GetChess(i/5,t)=='W'||S0.GetChess(i/5,t)=='w')
-                                    a=true;
-                            }
-                            if(a!=0) break;
-                        }
-                        S2=S0;
-                        S2.hit(j,i/5,i%5,1);
-                        V.push_back(S2);
-                    }
-                }
-            }
-        }
+                    //pure move
+                    S2.PutChess(Aim%5,Aim/5,S1.GetChess(x,y));
+                    S2.PutChess(x,y,0);
 
-        //move
-        else if( ((S0.GetChess(i/5,i%5)>97) && (!who) ) ||
-                 ((S0.GetChess(i/5,i%5)<97) &&   who  )   )
-        {
-            S0.initialMovable();
-            S0.GetMovable(i/5,i%5);
-
-            for(int j=0;j<25;j++)
-            {
-                if(S0.movable[j/5][j%5])
-                {
-                    S2=S0;
-                    if(S2.GetChess(j/5,j%5)!=0)
-                        S2.Take(j/5,j%5,who);
-                    int ug = S0.IFupgrade(S0.GetChess(j/5, j%5) + who*('a' - 'A'), j%5, who*4, who);
-                    if (ug == 2)
-                        {
-                            S2.PutChess(j/5, j%5, 't' - who*('a' - 'A'));
-                            S2.PutChess(i/5 , i%5 , 0);
-                            V.push_back(S2);
-                        }
-                    else if (ug == 3)
-                        {
-                            S2.PutChess(j/5, j%5, 'h' - who*('a' - 'A'));
-                            S2.PutChess(i/5 , i%5 , 0);
-                            V.push_back(S2);
-                        }
-                    else if (ug == 4)
-                        {
-                            S2.PutChess(j/5, j%5, 'u' - who*('a' - 'A'));
-                            S2.PutChess(i/5 , i%5 , 0);
-                            V.push_back(S2);
-                        }
-                    else if (ug == 5)
-                        {
-                            S2.PutChess(j/5, j%5, 'x' - who*('a' - 'A'));
-                            S2.PutChess(i/5 , i%5 , 0);
-                            V.push_back(S2);
-                        }
-
-                    S2.PutChess(j/5 , j%5 , S2.GetChess(i/5,i%5) );
-                    S2.PutChess(i/5 , i%5 , 0);
                     V.push_back(S2);
+
+
+                    //promote judge
+                    if( y==(who ? 4 : 0 ) || (Aim/5)==(who ? 4 : 0 ) )
+                    {
+                        char ThisChess=S2.GetChess(Aim%5,Aim/5)+who*32;
+
+                        switch(ThisChess)
+                        {
+                        case 's':
+                            S2.PutChess(Aim%5,Aim/5,('t'-who*32));
+                            V.push_back(S2);
+                            break;
+
+                        case 'c':
+                            S2.PutChess(Aim%5,Aim/5,('h'-who*32));
+                            V.push_back(S2);
+                            break;
+
+                        case 'f':
+                            S2.PutChess(Aim%5,Aim/5,('u'-who*32));
+                            V.push_back(S2);
+                            break;
+
+                        case 'w':
+                            S2.PutChess(Aim%5,Aim/5,('x'-who*32));
+                            V.push_back(S2);
+                            break;
+
+                        default:
+                            break;
+                        }
+                    }
+
                 }
+
             }
         }
     }
+    }
+
+    //for safe
+    S1=S0;
+
+    //hit
+    for(int index=1; index<6; index++)
+    {
+        if( (!who && S1.A[index]) || (who && S1.B[index]) )
+        {
+            for(x=0; x<5; x++)
+            {
+            for(y=0; y<5; y++)
+            {
+
+                //illegal judge
+                bool IsLegal=1;
+
+                //2 pawn
+                if(index==5)
+                {
+                    for(int Y=0; Y<5; Y++)
+                        if( S1.GetChess(x,Y)==('w'-who*32) )
+                            IsLegal=0;
+
+                    //pawn drop last line
+                    if( y==(who*4) ) IsLegal=0;
+                }
+
+                if(!IsLegal) break;
+
+
+                //empty judge
+                if(S1.GetChess(x,y)==0)
+                {
+                    S2=S1;
+                    S2.hit(index,x,y,who);
+                    V.push_back(S2);
+                }
+            }
+            }
+        }
+    }
+
 
     return V;
 }
@@ -200,27 +194,61 @@ minishogi AI::ABSearch(minishogi &S0,double Alpha,double Beta,int depth,bool who
 
 /**********TD*********/
 
-void AI::TD1(stack<minishogi> state,bool ifWIN,bool id)
+double AI::AdjustScalar(minishogi S,bool id)
 {
-    minishogi ST=state.top();
-    state.pop();
+    int len;
+
+    for(int i=1; i<10; i++)
+        len+=S.Minions[i]*S.Minions[i];
+
+    for(int i=1; i<6; i++)
+    len+=(id ? S.B[i]*S.B[i] : S.A[i]*S.A[i] );
+
+    for(int i=0; i<2; i++)
+    {
+        len+=S.BigChessForce[i]*S.BigChessForce[i];
+        len+=S.SpecialForm[i]*S.SpecialForm[i];
+    }
+
+    return (learningRATE/sqrt((double)len));
+}
+
+void AI::TD1(bool ifWIN,bool id)
+{
+    minishogi ST=TDbuffer.top();
+    TDbuffer.pop();
+
+    ST.LoadHeuristic();
+
     double VT=ST.TableScore(id);
 
     minishogi St;
     double Vt;
 
-    while(!state.empty() && ifWIN)
+    while(!TDbuffer.empty() && ifWIN)
     {
-        St=state.top();
-        state.pop();
+        St=TDbuffer.top();
+        TDbuffer.pop();
         Vt=St.TableScore(id);
 
-        for(int i=1;i<10;i++)
+        double Scalar=AdjustScalar(St,id)*((double)ifWIN-Vt);
+        St.GetAllStates(id);
+
+        //adjust
+        for(int i=1; i<10; i++)
+            ST.MinionsWeight[i]+=Scalar*(double)St.Minions[i];
+
+        for(int i=1; i<6; i++)
+            ST.HoldWeight[i]+=Scalar*(double)(id ? St.B[i] : St.A[i]);
+
+        for(int i=0; i<2; i++)
         {
-            //not done yet
+            ST.BigChessForceWeight[i]+=Scalar*(double)St.BigChessForce[i];
+            ST.SpecialFormWeight[i]+=Scalar*(double)St.SpecialForm[i];
         }
     }
 
+    ST.SaveHeuristic();
 }
 
 /*********mcts********/

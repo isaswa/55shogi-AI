@@ -10,9 +10,10 @@ class AI
 protected:
 
     minishogi S;
-    stack<minishogi> TDbuffer;
 
 public:
+
+    stack<minishogi> TDbuffer;
 
     void AssignTable(minishogi &);
 
@@ -23,7 +24,8 @@ public:
 	minishogi ABSearch(minishogi & ,double ,double ,int ,bool);
 
 	//TD-learning
-	void TD1(stack<minishogi> ,bool ,bool);
+	double AdjustScalar(minishogi ,bool);
+	void TD1(bool ,bool);
 
 	//mcts
 	void Expand(node*);

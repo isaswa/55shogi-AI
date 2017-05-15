@@ -26,8 +26,8 @@ public:
 
     //table elements
 	char hold[6] = { 'K','G','S','C','F','W' };
-	short A[6];
-	short B[6];
+	short A[6]={0};
+	short B[6]={0};
 	bool controlA[5][5];
 	bool controlB[5][5];
 	bool movable[5][5];
@@ -36,6 +36,7 @@ public:
 	short Minions[10]={0};
 	short BigChessForce[2]={0};
     bool SpecialForm[2]={0}; //
+
 	double MinionsWeight[10];
     double HoldWeight[6];
     double BigChessForceWeight[2];
@@ -45,6 +46,8 @@ public:
 	void GetMinionState(bool);
 	void GetBigChessForce(bool);
 	void GetSpecialForm(bool);
+	void GetAllStates(bool);
+	void ClearStates();
 
 	//heuristic file stream
 	void LoadHeuristic();
